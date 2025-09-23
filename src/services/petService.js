@@ -30,7 +30,26 @@ const create = async (formData) => {
     console.log(err);
   }
 };
+
+// src/services/PetService.js
+
+const update = async (formData, petId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${petId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    return res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export {
   index,
   create,
+  update
 };

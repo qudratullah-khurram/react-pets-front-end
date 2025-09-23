@@ -33,22 +33,52 @@ const handleSelect = (pet) => {
   setSelected (pet)
 }
  const handleFormView = () => {
+  if (!pets._id) setSelected(null);
     setIsFormOpen(!isFormOpen);
   };
 
   
+ // src/App.jsx
+
+const handleUpdatePet = async (formData, petId) => {
+  try {
+    const updatedPet = await petService.update(formData, petId);
+
+    // handle potential errors
+    if (updatedPet.err) {
+      throw new Error(updatedPet.err);
+    }
+
+    const updatedPetList = pets.map((pet) => (
+      // If the _id of the current pet is not the same as the updated pet's _id,
+      // return the existing pet.
+      // If the _id's match, instead return the updated pet.
+      pet._id !== updatedPet._id ? pet : updatedPet
+    ));
+    // Set pets state to this updated array
+    setPets(updatedPetList);
+    // If we don't set selected to the updated pet object, the details page will
+    // reference outdated data until the page reloads.
+    setSelected(updatedPet);
+    setIsFormOpen(false);
+  } catch (err) {
+    console.log(err);
+  }
+};
+// src/App.jsx
+
   const handleAddPet = async (formData) => {
     try {
-    const newPet = await petService.create(formData);
-     if (newPet.err) {
-      throw new Error(newPet.err);
-    }
-    setPets([newPet, ...pets]);
-    setIsFormOpen (false);
+      // Call petService.create, assign return value to newPet
+      const newPet = await petService.create(formData);
+      // Log the newPet to the console
+      console.log(newPet);
     } catch (err) {
       console.log(err);
     }
   };
+
+
   return (
     <>
       <PetList
@@ -57,15 +87,17 @@ const handleSelect = (pet) => {
         handleFormView={handleFormView}
         isFormOpen={isFormOpen}
       />
-       {isFormOpen ? (
-        <PetForm handleAddPet={handleAddPet} />
+        {isFormOpen ? (
+           <PetForm
+          handleAddPet={handleAddPet}
+          selected={selected}
+          handleUpdatePet={handleUpdatePet}
+        />
       ) : (
-        <PetDetail selected={selected} />
+        <PetDetail selected={selected} handleFormView={handleFormView}/>
       )}
     </>
-  );
 
-
-};
+)};
 
 export default App;
