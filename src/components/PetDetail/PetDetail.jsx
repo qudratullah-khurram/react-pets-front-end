@@ -22,7 +22,10 @@ const PetDetail = (props) => {
         <button onClick={() => props.handleFormView(props.selected)}>
           Edit Pet
         </button>
-    </div>
+         <button onClick={() => props.handleDeletePet(props.selected._id)}>
+          Delete Pet
+        </button>
+      </div>
     </div>
   );
 };

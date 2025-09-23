@@ -48,8 +48,23 @@ const update = async (formData, petId) => {
   }
 };
 
+// src/services/petService.js
+
+const deletePet = async (petId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${petId}`, {
+      method: 'DELETE',
+    });
+    return res.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
 export {
   index,
   create,
-  update
+  update,
+  deletePet
 };
